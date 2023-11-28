@@ -13,7 +13,12 @@ export default function Index() {
   const data = useLoaderData<typeof loader>();
   console.log('Index ~ data:', data);
 
-  return <div className="bg-red-300">{data.message}</div>;
+  return (
+    <div className="bg-red-300">
+      <div className="">{data.message}</div>
+      <p>test</p>
+    </div>
+  );
 }
 
 export async function loader() {
