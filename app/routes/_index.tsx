@@ -1,5 +1,6 @@
 import type { MetaFunction } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { scrape } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -15,6 +16,10 @@ export default function Index() {
   return <div className="bg-red-300">{data.message}</div>;
 }
 
-export function loader() {
-  return { message: 'Hello from loader!' };
+export async function loader() {
+  try {
+    return await scrape();
+  } catch (error: any) {
+    return { message: error.message };
+  }
 }
