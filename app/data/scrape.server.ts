@@ -2,7 +2,7 @@ import chromium from '@sparticuz/chromium';
 import puppeteerCore from 'puppeteer-core';
 import puppeteer from 'puppeteer';
 
-export async function scrape() {
+export async function getTitle() {
   console.log(process.env.NODE_ENV);
 
   let browser;
@@ -31,7 +31,7 @@ export async function scrape() {
   if (el) {
     const text = await page.evaluate((el: any) => el.textContent, el);
 
-    await browser!.close();
+    await browser.close();
     return {
       message: text,
     };
