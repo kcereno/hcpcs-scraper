@@ -16,6 +16,7 @@ export default function Index() {
   return (
     <div className="bg-red-300">
       <div className="">{data.message}</div>
+
       <p>test</p>
     </div>
   );

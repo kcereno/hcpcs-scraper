@@ -1,5 +1,5 @@
 import chromium from '@sparticuz/chromium';
-import puppeteer from 'puppeteer-core';
+import puppeteerCore from 'puppeteer-core';
 
 export async function scrape() {
   let text;
@@ -11,7 +11,8 @@ export async function scrape() {
     text = 'development';
   }
 
-  const browser = await puppeteer.launch({
+  // THIS WORKS WITH VERCEL
+  const browser = await puppeteerCore.launch({
     args: chromium.args,
     defaultViewport: chromium.defaultViewport,
     executablePath: await chromium.executablePath(),
