@@ -3,9 +3,14 @@ import puppeteerCore from 'puppeteer-core';
 import puppeteer from 'puppeteer';
 
 export async function scrape() {
+  console.log(process.env.NODE_ENV);
+
   let browser;
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV === 'development') {
+    browser = await puppeteer.launch({ headless: 'new' });
+  } else {
+    console.log('development');
     // THIS WORKS WITH VERCEL
     browser = await puppeteerCore.launch({
       args: chromium.args,
@@ -13,9 +18,6 @@ export async function scrape() {
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
-  } else {
-    console.log('development');
-    browser = await puppeteer.launch({ headless: true });
   }
 
   const url = 'https://www.mozilla.org/en-US/firefox/';
@@ -29,6 +31,7 @@ export async function scrape() {
   if (el) {
     const text = await page.evaluate((el: any) => el.textContent, el);
 
+    await browser!.close();
     return {
       message: text,
     };
