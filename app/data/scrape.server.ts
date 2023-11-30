@@ -21,6 +21,32 @@ const startBrowser = async () => {
   return browser;
 };
 
+export async function getLCDs() {
+  console.log('getting lcds');
+
+  const browser = await startBrowser();
+  const page = await browser.newPage();
+
+  const url = 'https://cgsmedicare.com/jc/coverage/lcdinfo.html';
+  await page.goto(url);
+
+  const firstColumnData = await page.evaluate(() => {
+    const tableRows = Array.from(
+      document.querySelectorAll('table.greenbackground tr')
+    );
+    const firstColumn = tableRows.map((row) => {
+      const cells = Array.from(row.querySelectorAll('td, th'));
+      return cells[0] ? cells[0].textContent.trim() : null;
+    });
+
+    return firstColumn.slice(1);
+  });
+
+  await browser.close();
+
+  return firstColumnData;
+}
+
 export async function getTitle() {
   const browser = await startBrowser();
 

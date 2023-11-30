@@ -1,8 +1,8 @@
 import type { MetaFunction } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
-// import { useLoaderData } from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import React from 'react';
-import { getTitle } from '~/data/scrape.server';
+import { getLCDs, getTitle } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,9 +12,9 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  // const data = useLoaderData<typeof loader>();
   // console.log('Index ~ data:', data);
-
+  const loaderData = useLoaderData<typeof loader>();
+  console.log('Index ~ loaderData:', loaderData);
   // const handleButtonClick = async () => {
   //   const title = await getTitle();
   //   console.log('handleButtonClick ~ title:', title);
@@ -29,7 +29,13 @@ export default function Index() {
   return (
     <div className="mx-10">
       <h1 className="text-4xl font-bold py-20">HCPCS Scraper</h1>
-      {data ? <p>{data?.message.message}</p> : null}
+      <hr />
+      <p>loading data</p>
+      {loaderData?.map((lcd: any) => (
+        <p key={lcd}>{lcd}</p>
+      ))}
+      <hr />
+      Fetching data
       <Form method="post">
         <button
           type="submit"
@@ -38,11 +44,16 @@ export default function Index() {
           Scrape
         </button>
       </Form>
+      {data ? <p>{data?.message.message}</p> : null}
     </div>
   );
 }
 
-// export async function loader() {}
+export async function loader() {
+  const lcds = await getLCDs();
+  console.log('loader ~ lcds:', lcds);
+  return lcds;
+}
 export async function action() {
   console.log('action triggered');
   const title = await getTitle();
