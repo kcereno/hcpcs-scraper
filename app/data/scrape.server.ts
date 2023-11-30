@@ -2,6 +2,15 @@ import chromium from '@sparticuz/chromium';
 import puppeteer from 'puppeteer-core';
 
 export async function scrape() {
+  let text;
+
+  if (process.env.NODE_ENV === 'production') {
+    text = 'production';
+  } else {
+    console.log('development');
+    text = 'development';
+  }
+
   const browser = await puppeteer.launch({
     args: chromium.args,
     defaultViewport: chromium.defaultViewport,
@@ -26,6 +35,6 @@ export async function scrape() {
   }
 
   return {
-    message: 'Scrape data',
+    message: 'Scrape data' + text,
   };
 }
