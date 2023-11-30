@@ -1,12 +1,12 @@
-import chromium from 'chrome-aws-lambda';
+import chromium from '@sparticuz/chromium';
+import puppeteer from 'puppeteer-core';
 
 export async function scrape() {
-  const browser = await chromium.puppeteer.launch({
-    args: [...chromium.args, '--hide-scrollbars', '--disable-web-security'],
+  const browser = await puppeteer.launch({
+    args: chromium.args,
     defaultViewport: chromium.defaultViewport,
-    executablePath: await chromium.executablePath,
-    headless: true,
-    ignoreHTTPSErrors: true,
+    executablePath: await chromium.executablePath(),
+    headless: chromium.headless,
   });
 
   const url = 'https://www.mozilla.org/en-US/firefox/';
