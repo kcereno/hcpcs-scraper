@@ -2,9 +2,7 @@ import chromium from '@sparticuz/chromium';
 import puppeteerCore from 'puppeteer-core';
 import puppeteer from 'puppeteer';
 
-export async function getTitle() {
-  console.log(process.env.NODE_ENV);
-
+const startBrowser = async () => {
   let browser;
 
   if (process.env.NODE_ENV === 'development') {
@@ -19,6 +17,12 @@ export async function getTitle() {
       headless: chromium.headless,
     });
   }
+
+  return browser;
+};
+
+export async function getTitle() {
+  const browser = await startBrowser();
 
   const url = 'https://www.mozilla.org/en-US/firefox/';
   const selector = 'h1';
