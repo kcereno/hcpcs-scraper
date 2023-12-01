@@ -13,6 +13,7 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
+  console.log('Index ~ selectedLcdIndex:', selectedLcdIndex);
   const lcdData = useLoaderData<typeof loader>();
 
   const data = useActionData<typeof action>();
@@ -43,7 +44,7 @@ export default function Index() {
 
       {/* Second Column */}
       <div className="flex-1 overflow-y-auto p-4">
-        {selectedLcdIndex ? (
+        {selectedLcdIndex !== null ? (
           <HCPCData {...lcdData[selectedLcdIndex]} />
         ) : (
           <div className="text-center py-20">
