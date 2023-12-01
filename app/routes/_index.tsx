@@ -2,6 +2,7 @@ import type { MetaFunction } from '@remix-run/node';
 import { Form, useActionData } from '@remix-run/react';
 import { useLoaderData } from '@remix-run/react';
 import React from 'react';
+import HCPCData from '~/components/HCPCData';
 import { getLCDs, getTitle } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
@@ -31,7 +32,7 @@ export default function Index() {
     <div className="flex h-screen">
       <div className="flex-none w-[400px] border-r border-gray-300 overflow-y-auto p-4">
         <div className="">
-          <h2 className="text-2xl">Labels</h2>
+          <h2 className="text-2xl">LCD's</h2>
           <hr className="my-2" />
           <ul className="flex gap-4 flex-col flex-wrap">
             {lcds?.map((lcd: string) => (
@@ -55,9 +56,7 @@ export default function Index() {
       {/* Second Column */}
       <div className="flex-1 overflow-y-auto p-4">
         {selectedLcd ? (
-          <div className="">
-            <h1 className="text-4xl">{selectedLcd}</h1>
-          </div>
+          <HCPCData title={selectedLcd} />
         ) : (
           <div className="text-center py-20">
             <h1 className="text-4xl font-bold font-inter">HCPC Scraper</h1>
