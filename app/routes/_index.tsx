@@ -13,7 +13,7 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
-  console.log('Index ~ selectedLcdIndex:', selectedLcdIndex);
+
   const lcdData = useLoaderData<typeof loader>();
 
   const data = useActionData<typeof action>();

@@ -3,7 +3,6 @@ export const formatHcpcsModifiers = (hcpcsModifiers: string) => {
 };
 
 export const getHcpcsDescription = (code: string) => {
-  console.log('getHcpcsDescription ~ code:', code);
   const hcpsDescriptions: { code: string; description: string }[] = [
     {
       code: 'BA',
