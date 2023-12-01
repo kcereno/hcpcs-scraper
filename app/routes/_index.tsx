@@ -12,6 +12,7 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const [selectedLcd, setSelectedLcd] = React.useState('');
   // console.log('Index ~ data:', data);
   const lcds = useLoaderData<typeof loader>();
 
@@ -28,21 +29,42 @@ export default function Index() {
 
   return (
     <div className="flex h-screen">
-      <div className="flex-none w-96 border-r border-gray-300 overflow-y-auto p-4">
+      <div className="flex-none w-[400px] border-r border-gray-300 overflow-y-auto p-4">
         <div className="">
           <h2 className="text-2xl">Labels</h2>
           <hr className="my-2" />
-          <div className="flex gap-2 flex-col flex-wrap">
+          <ul className="flex gap-4 flex-col flex-wrap">
             {lcds?.map((lcd: string) => (
-              <p key={lcd}>{lcd}</p>
+              <li
+                onClick={() => {
+                  setSelectedLcd(lcd);
+                }}
+                className={`hover:bg-gray-400 cursor-pointer ${
+                  selectedLcd === lcd && 'bg-gray-400'
+                }`}
+                key={lcd}
+              >
+                {lcd}
+              </li>
             ))}
-          </div>
+          </ul>
           <hr />
         </div>
       </div>
 
       {/* Second Column */}
-      <div className="flex-1 overflow-y-auto p-4">HCPC content</div>
+      <div className="flex-1 overflow-y-auto p-4">
+        {selectedLcd ? (
+          <div className="">
+            <h1 className="text-4xl">{selectedLcd}</h1>
+          </div>
+        ) : (
+          <div className="text-center py-20">
+            <h1 className="text-4xl font-bold font-inter">HCPC Scraper</h1>
+            <p className="my-10">Select an LCD from the left column</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
