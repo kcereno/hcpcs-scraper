@@ -1,6 +1,7 @@
 import chromium from '@sparticuz/chromium';
 import puppeteerCore from 'puppeteer-core';
 import puppeteer from 'puppeteer';
+import { lcdDataType } from 'types';
 
 const startBrowser = async () => {
   let browser;
@@ -21,7 +22,7 @@ const startBrowser = async () => {
   return browser;
 };
 
-export async function getLCDs() {
+export async function getLCDs(): Promise<lcdDataType[]> {
   console.log('getting lcds');
 
   const browser = await startBrowser();
