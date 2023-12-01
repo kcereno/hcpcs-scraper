@@ -13,8 +13,8 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   // console.log('Index ~ data:', data);
-  const loaderData = useLoaderData<typeof loader>();
-  console.log('Index ~ loaderData:', loaderData);
+  const lcds = useLoaderData<typeof loader>();
+
   // const handleButtonClick = async () => {
   //   const title = await getTitle();
   //   console.log('handleButtonClick ~ title:', title);
@@ -27,31 +27,29 @@ export default function Index() {
   console.log('Index ~ data:', data?.message.message);
 
   return (
-    <div className="mx-10">
-      <h1 className="text-4xl font-bold py-20">HCPCS Scraper</h1>
-      <hr />
-      <p>loading data</p>
-      {loaderData?.map((lcd: any) => (
-        <p key={lcd}>{lcd}</p>
-      ))}
-      <hr />
-      Fetching data
-      <Form method="post">
-        <button
-          type="submit"
-          className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          Scrape
-        </button>
-      </Form>
-      {data ? <p>{data?.message.message}</p> : null}
+    <div className="flex h-screen">
+      <div className="flex-none w-96 border-r border-gray-300 overflow-y-auto p-4">
+        <div className="">
+          <h2 className="text-2xl">Labels</h2>
+          <hr className="my-2" />
+          <div className="flex gap-2 flex-col flex-wrap">
+            {lcds?.map((lcd: string) => (
+              <p key={lcd}>{lcd}</p>
+            ))}
+          </div>
+          <hr />
+        </div>
+      </div>
+
+      {/* Second Column */}
+      <div className="flex-1 overflow-y-auto p-4">HCPC content</div>
     </div>
   );
 }
 
 export async function loader() {
   const lcds = await getLCDs();
-  console.log('loader ~ lcds:', lcds);
+
   return lcds;
 }
 export async function action() {
