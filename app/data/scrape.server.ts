@@ -30,21 +30,45 @@ export async function getLCDs() {
   const url = 'https://cgsmedicare.com/jc/coverage/lcdinfo.html';
   await page.goto(url);
 
-  const firstColumnData = await page.evaluate(() => {
-    const tableRows = Array.from(
-      document.querySelectorAll('table.greenbackground tr')
-    );
-    const firstColumn = tableRows.map((row) => {
-      const cells = Array.from(row.querySelectorAll('td, th'));
-      return cells[0] ? cells[0].textContent.trim() : null;
-    });
+  const table = await page.$('table[class="greenbackground"]');
 
-    return firstColumn.slice(1);
-  });
+  const results = [];
+
+  if (table) {
+    const tableRows = await table.$$('tr');
+    let linkText;
+    let linkHref;
+    let hcpcsModifiers;
+
+    for (const row in tableRows) {
+      const linkColumn = await tableRows[row].$('td:nth-child(1)');
+      if (linkColumn) {
+        linkText = await page.evaluate((el: any) => el.textContent, linkColumn);
+        linkHref = await linkColumn.evaluate((el) =>
+          el.querySelector('a').getAttribute('href')
+        );
+      }
+
+      const hcpcsModifierCol = await tableRows[row].$('td:nth-child(3)');
+      if (hcpcsModifierCol) {
+        hcpcsModifiers = await page.evaluate(
+          (el: any) => el.textContent,
+          hcpcsModifierCol
+        );
+      }
+
+      const data = {
+        name: linkText,
+        link: linkHref,
+        hcpcsModifiers,
+      };
+
+      results.push(data);
+    }
+  }
 
   await browser.close();
-
-  return firstColumnData;
+  return results.slice(1);
 }
 
 export async function getTitle() {
