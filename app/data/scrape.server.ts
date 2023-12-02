@@ -22,7 +22,7 @@ const startBrowser = async () => {
   return browser;
 };
 
-export async function getLCDs(): Promise<lcdDataType[]> {
+export async function getLCDData(): Promise<lcdDataType[]> {
   console.log('getting lcds');
 
   const browser = await startBrowser();

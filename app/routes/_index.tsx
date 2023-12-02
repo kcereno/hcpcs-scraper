@@ -1,8 +1,12 @@
-import type { ActionFunctionArgs, MetaFunction } from '@remix-run/node';
+import {
+  json,
+  type ActionFunctionArgs,
+  type MetaFunction,
+} from '@remix-run/node';
 import { Form, useActionData, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import HCPCData from '~/components/HCPCData';
-import { getHCPCSTableData, getLCDs, getTitle } from '~/data/scrape.server';
+import { getHCPCSTableData, getLCDData, getTitle } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -67,7 +71,8 @@ export default function Index() {
 }
 
 export async function loader() {
-  return await getLCDs();
+  const lcdData = await getLCDData();
+  return json(lcdData);
 }
 export async function action({ request }: ActionFunctionArgs) {
   console.log('action triggered');
