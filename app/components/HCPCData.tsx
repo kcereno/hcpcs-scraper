@@ -22,7 +22,7 @@ function HCPCData({ name, link, hcpcsModifiers }: lcdDataType) {
       </div>
       <div className="my-10">
         <h2 className="text-2xl tracking-tight font-bold">HCPCS Modifiers</h2>
-        <ul className="list-disc list-inside ml-2 flex flex-col gap-2">
+        <ul className="list-disc list-inside ml-2 flex flex-col gap-1">
           {formattedHcpcsModifiers.map((hcpc, index) => (
             <li key={index}>{`${hcpc}  -  ${getHcpcsDescription(hcpc)}`}</li>
           ))}

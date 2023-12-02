@@ -96,3 +96,7 @@ export async function getTitle() {
     message: 'Scrape data',
   };
 }
+
+export async function getHCPCSTableData(url: string) {
+  console.log('url:', url);
+}

@@ -1,8 +1,8 @@
-import type { MetaFunction } from '@remix-run/node';
-import { useActionData, useLoaderData } from '@remix-run/react';
+import type { ActionFunctionArgs, MetaFunction } from '@remix-run/node';
+import { Form, useActionData, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import HCPCData from '~/components/HCPCData';
-import { getLCDs, getTitle } from '~/data/scrape.server';
+import { getHCPCSTableData, getLCDs, getTitle } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -15,31 +15,40 @@ export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
 
   const lcdData = useLoaderData<typeof loader>();
+  console.log('Index ~ lcdData:', lcdData);
 
   const data = useActionData<typeof action>();
 
   return (
     <div className="flex h-screen">
-      <div className="flex-none w-[400px] border-r border-gray-300 overflow-y-auto p-4">
-        <div className="">
-          <h2 className="text-2xl">LCD's</h2>
-          <hr className="my-2" />
-          <ul className="flex gap-4 flex-col flex-wrap">
+      {/* First Column */}
+      <div className="w-[450px] overflow-y-auto py-4">
+        <h2 className="text-2xl w-full px-2 font-bold tracking-tight">LCD's</h2>
+        <hr className="my-2" />
+
+        <Form method="post">
+          <ul className="flex flex-col divide-y divide-solid">
             {lcdData.map((lcd, index) => (
               <li
                 onClick={() => {
                   setSelectedLcdIndex(index);
                 }}
-                className={`hover:bg-gray-400 cursor-pointer ${
-                  selectedLcdIndex === index && 'bg-gray-400'
+                className={`hover:bg-gray-300 cursor-pointer py-1 ${
+                  selectedLcdIndex === index && 'bg-gray-200'
                 }`}
                 key={lcd.name}
               >
-                {lcd.name}
+                <button
+                  type="submit"
+                  className="px-2 py-1 w-full text-left"
+                  value={lcd.name}
+                >
+                  {lcd.name}
+                </button>
               </li>
             ))}
           </ul>
-        </div>
+        </Form>
       </div>
 
       {/* Second Column */}
@@ -60,8 +69,13 @@ export default function Index() {
 export async function loader() {
   return await getLCDs();
 }
-export async function action() {
-  const title = await getTitle();
+export async function action({ request }: ActionFunctionArgs) {
+  console.log('action triggered');
+  const formData = await request.formData();
+  const url = formData.get('value');
+  console.log('action ~ url:', url);
+  console.log('action ~ formData:', formData);
+  // const title = await getHCPCSTableData();
 
-  return { message: title };
+  return { message: 'test' };
 }
