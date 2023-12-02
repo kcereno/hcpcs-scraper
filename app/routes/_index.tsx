@@ -34,26 +34,23 @@ export default function Index() {
         <h2 className="text-2xl w-full px-2 font-bold tracking-tight">LCD's</h2>
         <hr className="my-2" />
 
-        <Form method="post">
-          <ul className="flex flex-col divide-y divide-solid">
-            {lcdData.map((lcd, index) => (
-              <li
-                className={`hover:bg-gray-300 cursor-pointer py-1 ${
-                  selectedLcdIndex === index && 'bg-gray-200'
-                }`}
-                key={lcd.name}
-                onClick={() => handleClick(index)}
-              >
-                <button
-                  type="submit"
-                  className="px-2 py-1 w-full text-left"
-                  value={lcd.name}
-                >
-                  {lcd.name}
-                </button>
-              </li>
-            ))}
-          </ul>
+        <Form
+          method="post"
+          className="flex flex-col divide-y divide-solid"
+        >
+          {lcdData.map((lcd, index) => (
+            <button
+              className={`hover:bg-gray-300 cursor-pointer py-2 px-2  w-full text-left ${
+                selectedLcdIndex === index && 'bg-gray-200'
+              }`}
+              key={lcd.name}
+              onClick={() => handleClick(index)}
+              name={lcd.name}
+              type="submit"
+            >
+              {lcd.name}
+            </button>
+          ))}
         </Form>
       </div>
 
