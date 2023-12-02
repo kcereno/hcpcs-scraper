@@ -3,13 +3,8 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from '@remix-run/node';
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useSubmit,
-  ShouldRevalidateFunction,
-} from '@remix-run/react';
+import type { ShouldRevalidateFunction } from '@remix-run/react';
+import { Form, useActionData, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import HCPCData from '~/components/HCPCData';
 import { getLCDData } from '~/data/scrape.server';
@@ -23,8 +18,6 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
-
-  const submit = useSubmit;
 
   const lcdData = useLoaderData<typeof loader>();
 
@@ -41,12 +34,7 @@ export default function Index() {
         <h2 className="text-2xl w-full px-2 font-bold tracking-tight">LCD's</h2>
         <hr className="my-2" />
 
-        <Form
-          method="post"
-          onSubmit={() => {
-            submit;
-          }}
-        >
+        <Form method="post">
           <ul className="flex flex-col divide-y divide-solid">
             {lcdData.map((lcd, index) => (
               <li
