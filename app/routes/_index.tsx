@@ -3,10 +3,16 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from '@remix-run/node';
-import { Form, useActionData, useLoaderData } from '@remix-run/react';
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useSubmit,
+  ShouldRevalidateFunction,
+} from '@remix-run/react';
 import { useState } from 'react';
 import HCPCData from '~/components/HCPCData';
-import { getHCPCSTableData, getLCDData, getTitle } from '~/data/scrape.server';
+import { getLCDData } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -18,10 +24,15 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
 
-  const lcdData = useLoaderData<typeof loader>();
-  console.log('Index ~ lcdData:', lcdData);
+  const submit = useSubmit;
 
-  const data = useActionData<typeof action>();
+  const lcdData = useLoaderData<typeof loader>();
+
+  // const data = useActionData<typeof action>();
+
+  const handleClick = (index: number) => {
+    setSelectedLcdIndex(index);
+  };
 
   return (
     <div className="flex h-screen">
@@ -30,17 +41,20 @@ export default function Index() {
         <h2 className="text-2xl w-full px-2 font-bold tracking-tight">LCD's</h2>
         <hr className="my-2" />
 
-        <Form method="post">
+        <Form
+          method="post"
+          onSubmit={() => {
+            submit;
+          }}
+        >
           <ul className="flex flex-col divide-y divide-solid">
             {lcdData.map((lcd, index) => (
               <li
-                onClick={() => {
-                  setSelectedLcdIndex(index);
-                }}
                 className={`hover:bg-gray-300 cursor-pointer py-1 ${
                   selectedLcdIndex === index && 'bg-gray-200'
                 }`}
                 key={lcd.name}
+                onClick={() => handleClick(index)}
               >
                 <button
                   type="submit"
@@ -75,12 +89,13 @@ export async function loader() {
   return json(lcdData);
 }
 export async function action({ request }: ActionFunctionArgs) {
-  console.log('action triggered');
-  const formData = await request.formData();
-  const url = formData.get('value');
-  console.log('action ~ url:', url);
-  console.log('action ~ formData:', formData);
+  console.log('action');
+  // const formData = await request.formData();
+  // const url = formData.get('value');
+
   // const title = await getHCPCSTableData();
 
   return { message: 'test' };
 }
+
+export const shouldRevalidate: ShouldRevalidateFunction = () => false;
