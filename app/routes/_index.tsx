@@ -4,19 +4,15 @@ import {
   type MetaFunction,
 } from '@remix-run/node';
 import type { ShouldRevalidateFunction } from '@remix-run/react';
-import {
-  Form,
-  useActionData,
-  useFetcher,
-  useLoaderData,
-} from '@remix-run/react';
+import { Form, useActionData, useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
+import GeneralRequirements from '~/components/GeneralRequirements';
 import HCPCData from '~/components/HCPCData';
 import { getDocumentationRequirements, getLCDData } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'New Remix App' },
+    { title: 'HCPCS Scraper' },
     { name: 'description', content: 'Welcome to Remix!' },
   ];
 };
@@ -26,8 +22,7 @@ export default function Index() {
 
   const lcdData = useLoaderData<typeof loader>();
 
-  const data = useActionData<typeof action>();
-  console.log('Index ~ data:', data);
+  const actionData = useActionData<typeof action>();
 
   const handleClick = (index: number) => {
     setSelectedLcdIndex(index);
@@ -63,9 +58,11 @@ export default function Index() {
 
       {/* Second Column */}
       <div className="flex-1 overflow-y-auto p-4">
-        {data && <div dangerouslySetInnerHTML={{ __html: data }} />}
         {selectedLcdIndex !== null ? (
-          <HCPCData {...lcdData[selectedLcdIndex]} />
+          <>
+            <HCPCData {...lcdData[selectedLcdIndex]} />
+            {actionData && <GeneralRequirements data={actionData} />}
+          </>
         ) : (
           <div className="text-center py-20">
             <h1 className="text-4xl font-bold font-inter">HCPC Scraper</h1>
