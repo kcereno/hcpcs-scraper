@@ -10,7 +10,7 @@ import {
   useLoaderData,
   useNavigation,
 } from '@remix-run/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GeneralRequirements from '~/components/GeneralRequirements';
 import HCPCData from '~/components/HCPCData';
 import { getDocumentationRequirements, getLCDData } from '~/data/scrape.server';
@@ -24,15 +24,23 @@ export const meta: MetaFunction = () => {
 
 export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
+  const [generalRequirements, setGeneralRequirements] = useState<string | null>(
+    null
+  );
+  console.log('Index ~ generalRequirements:', generalRequirements);
 
   const lcdData = useLoaderData<typeof loader>();
 
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
-  console.log('Index ~ navigation:', navigation);
+
+  useEffect(() => {
+    setGeneralRequirements(actionData);
+  }, [actionData]);
 
   const handleClick = (index: number) => {
     setSelectedLcdIndex(index);
+    setGeneralRequirements(null);
   };
 
   return (
@@ -69,7 +77,7 @@ export default function Index() {
           <>
             <HCPCData {...lcdData[selectedLcdIndex]} />
             {navigation.state === 'submitting' && <p>Getting Data</p>}
-            {actionData && <GeneralRequirements data={actionData} />}
+            {actionData && <GeneralRequirements data={generalRequirements} />}
           </>
         ) : (
           <div className="text-center py-20">
