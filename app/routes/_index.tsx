@@ -4,7 +4,12 @@ import {
   type MetaFunction,
 } from '@remix-run/node';
 import type { ShouldRevalidateFunction } from '@remix-run/react';
-import { Form, useActionData, useLoaderData } from '@remix-run/react';
+import {
+  Form,
+  useActionData,
+  useLoaderData,
+  useNavigation,
+} from '@remix-run/react';
 import { useState } from 'react';
 import GeneralRequirements from '~/components/GeneralRequirements';
 import HCPCData from '~/components/HCPCData';
@@ -23,6 +28,8 @@ export default function Index() {
   const lcdData = useLoaderData<typeof loader>();
 
   const actionData = useActionData<typeof action>();
+  const navigation = useNavigation();
+  console.log('Index ~ navigation:', navigation);
 
   const handleClick = (index: number) => {
     setSelectedLcdIndex(index);
@@ -61,6 +68,7 @@ export default function Index() {
         {selectedLcdIndex !== null ? (
           <>
             <HCPCData {...lcdData[selectedLcdIndex]} />
+            {navigation.state === 'submitting' && <p>Getting Data</p>}
             {actionData && <GeneralRequirements data={actionData} />}
           </>
         ) : (
