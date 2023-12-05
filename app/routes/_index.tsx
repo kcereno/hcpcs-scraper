@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from 'react';
 import GeneralRequirements from '~/components/GeneralRequirements';
 import HCPCData from '~/components/HCPCData';
+import Loader from '~/components/ui/Loader';
 import { getDocumentationRequirements, getLCDData } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
@@ -27,10 +28,8 @@ export default function Index() {
   const [generalRequirements, setGeneralRequirements] = useState<string | null>(
     null
   );
-  console.log('Index ~ generalRequirements:', generalRequirements);
 
   const lcdData = useLoaderData<typeof loader>();
-
   const actionData = useActionData<typeof action>();
   const navigation = useNavigation();
 
@@ -76,7 +75,7 @@ export default function Index() {
         {selectedLcdIndex !== null ? (
           <>
             <HCPCData {...lcdData[selectedLcdIndex]} />
-            {navigation.state === 'submitting' && <p>Getting Data</p>}
+            {navigation.state === 'submitting' && <Loader />}
             {actionData && <GeneralRequirements data={generalRequirements} />}
           </>
         ) : (
