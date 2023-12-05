@@ -4,10 +4,15 @@ import {
   type MetaFunction,
 } from '@remix-run/node';
 import type { ShouldRevalidateFunction } from '@remix-run/react';
-import { Form, useActionData, useLoaderData } from '@remix-run/react';
+import {
+  Form,
+  useActionData,
+  useFetcher,
+  useLoaderData,
+} from '@remix-run/react';
 import { useState } from 'react';
 import HCPCData from '~/components/HCPCData';
-import { getLCDData } from '~/data/scrape.server';
+import { getDocumentationRequirements, getLCDData } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -21,7 +26,8 @@ export default function Index() {
 
   const lcdData = useLoaderData<typeof loader>();
 
-  // const data = useActionData<typeof action>();
+  const data = useActionData<typeof action>();
+  console.log('Index ~ data:', data);
 
   const handleClick = (index: number) => {
     setSelectedLcdIndex(index);
@@ -45,7 +51,8 @@ export default function Index() {
               }`}
               key={lcd.name}
               onClick={() => handleClick(index)}
-              name={lcd.name}
+              name="lcdUrl"
+              value={lcd.link}
               type="submit"
             >
               {lcd.name}
@@ -56,6 +63,7 @@ export default function Index() {
 
       {/* Second Column */}
       <div className="flex-1 overflow-y-auto p-4">
+        {data && <div dangerouslySetInnerHTML={{ __html: data }} />}
         {selectedLcdIndex !== null ? (
           <HCPCData {...lcdData[selectedLcdIndex]} />
         ) : (
@@ -75,12 +83,14 @@ export async function loader() {
 }
 export async function action({ request }: ActionFunctionArgs) {
   console.log('action');
-  // const formData = await request.formData();
-  // const url = formData.get('value');
+  const formData = await request.formData();
+  const url = formData.get('lcdUrl');
 
-  // const title = await getHCPCSTableData();
+  const documentationRequirements = await getDocumentationRequirements(
+    url as string
+  );
 
-  return { message: 'test' };
+  return json(documentationRequirements);
 }
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;

@@ -1,7 +1,7 @@
 import chromium from '@sparticuz/chromium';
 import puppeteerCore from 'puppeteer-core';
 import puppeteer from 'puppeteer';
-import { lcdDataType } from 'types';
+import type { lcdDataType } from 'types';
 
 const startBrowser = async () => {
   let browser;
@@ -9,7 +9,7 @@ const startBrowser = async () => {
   if (process.env.NODE_ENV === 'development') {
     browser = await puppeteer.launch({ headless: 'new' });
   } else {
-    console.log('development');
+    console.log('pruduction');
     // THIS WORKS WITH VERCEL
     browser = await puppeteerCore.launch({
       args: chromium.args,
@@ -72,31 +72,25 @@ export async function getLCDData(): Promise<lcdDataType[]> {
   return results.slice(1);
 }
 
-export async function getTitle() {
+export async function getDocumentationRequirements(url: string) {
+  console.log('fetching doc requirements', url);
+
   const browser = await startBrowser();
+  const page = await browser.newPage();
 
-  const url = 'https://www.mozilla.org/en-US/firefox/';
-  const selector = 'h1';
+  try {
+    await page.goto(url);
 
-  const page = await browser!.newPage();
-  await page.goto(url);
+    const selector = 'span[id="lblAssociatedInformation"]';
 
-  const el = await page.$(selector);
+    const scrapedElement = await page.$(selector);
+    const content = await page.evaluate((el) => el.innerHTML, scrapedElement);
 
-  if (el) {
-    const text = await page.evaluate((el: any) => el.textContent, el);
-
+    return content;
+  } catch (error) {
+    console.log('getDocumentationRequirements ~ error:', error);
+    return { error: 'error' };
+  } finally {
     await browser.close();
-    return {
-      message: text,
-    };
   }
-
-  return {
-    message: 'Scrape data',
-  };
-}
-
-export async function getHCPCSTableData(url: string) {
-  console.log('url:', url);
 }
