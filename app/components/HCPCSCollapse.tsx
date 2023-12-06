@@ -22,9 +22,17 @@ const HCPCSCollapse = ({ hcpcsModifiers }: Props) => {
       <div className="collapse-title text-2xl tracking-tight font-bold">
         HCPCS
       </div>
-      <div className="collapse-content">
+      <div className="collapse-content space-y-4">
         <div className="">
           <h2 className="text-xl tracking-tight font-bold">Modifiers</h2>
+          <ul className="list-disc list-inside ml-2 flex flex-col gap-1">
+            {hcpcsModifiers.map((hcpc, index) => (
+              <li key={index}>{`${hcpc}  -  ${getHcpcsDescription(hcpc)}`}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="">
+          <h2 className="text-xl tracking-tight font-bold">Codes</h2>
           <ul className="list-disc list-inside ml-2 flex flex-col gap-1">
             {hcpcsModifiers.map((hcpc, index) => (
               <li key={index}>{`${hcpc}  -  ${getHcpcsDescription(hcpc)}`}</li>

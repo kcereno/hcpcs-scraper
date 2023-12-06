@@ -1,5 +1,4 @@
 import { Form } from '@remix-run/react';
-import React, { useState } from 'react';
 import type { lcdDataType } from 'types';
 
 type Props = {
@@ -9,8 +8,6 @@ type Props = {
 };
 
 function Sidebar({ lcdData, selectedLcdIndex, handleSideBarClick }: Props) {
-  console.log('Sidebar ~ lcdData:', lcdData);
-
   return (
     <div className="w-[400px] overflow-y-auto py-4 border-r ">
       <h2 className="text-2xl w-full px-2 font-bold tracking-tight">LCD's</h2>

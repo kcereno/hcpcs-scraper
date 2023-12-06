@@ -1,18 +1,44 @@
-import React from 'react';
+import { useNavigation } from '@remix-run/react';
+import React, { useState } from 'react';
+import Loader from './ui/Loader';
 
 type Props = {
   data: any;
 };
 
-function GeneralRequirements({ data }: Props) {
+function GeneralRequirementsCollapse({ data }: Props) {
+  console.log('GeneralRequirementsCollapse ~ data:', data);
+  const navigation = useNavigation();
+  console.log('GeneralRequirementsCollapse ~ navigation:', navigation);
+  const [open, setOpen] = useState(false);
   return (
-    <div>
-      <div
-        className=""
-        dangerouslySetInnerHTML={{ __html: data }}
-      ></div>
+    <div
+      className={`collapse collapse-plus bg-base-200 max-w-7xl ${
+        open ? 'collapse-open' : 'collapse-close'
+      }`}
+      onClick={() => setOpen(!open)}
+    >
+      <input
+        type="radio"
+        name="my-accordion-1"
+      />
+      <div className="collapse-title text-2xl tracking-tight font-bold">
+        General Requirements
+      </div>
+      <div className="collapse-content space-y-4">
+        {navigation.state === 'submitting' && <Loader />}
+        {data ? (
+          <div
+            className=""
+            dangerouslySetInnerHTML={{ __html: data }}
+          ></div>
+        ) : null}
+      </div>
     </div>
+    // <div>
+
+    // </div>
   );
 }
 
-export default GeneralRequirements;
+export default GeneralRequirementsCollapse;

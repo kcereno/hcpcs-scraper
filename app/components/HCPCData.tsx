@@ -1,9 +1,10 @@
 import { useActionData } from '@remix-run/react';
 import React from 'react';
 import type { loaderDataType } from 'types';
-import { formatHcpcsModifiers, getHcpcsDescription } from 'utils/formatters';
+import { formatHcpcsModifiers } from 'utils/formatters';
 import type { action } from '~/routes/_index';
 import HCPCSCollapse from './HCPCSCollapse';
+import GeneralRequirementsCollapse from './GeneralRequirements';
 
 function HCPCData({ name, url, hcpcsModifiers }: loaderDataType) {
   const formattedHcpcsModifiers = formatHcpcsModifiers(hcpcsModifiers);
@@ -25,8 +26,10 @@ function HCPCData({ name, url, hcpcsModifiers }: loaderDataType) {
         </h1>
         <hr />
       </div>
-
-      <HCPCSCollapse hcpcsModifiers={formattedHcpcsModifiers} />
+      <div className="space-y-2">
+        <HCPCSCollapse hcpcsModifiers={formattedHcpcsModifiers} />
+        <GeneralRequirementsCollapse data={documentationRequirements} />
+      </div>
     </div>
   );
 }
