@@ -11,80 +11,75 @@ import {
   useNavigation,
 } from '@remix-run/react';
 import { useEffect, useState } from 'react';
+import { lcdDataType, loaderDataType } from 'types';
 import GeneralRequirements from '~/components/GeneralRequirements';
 import HCPCData from '~/components/HCPCData';
+import Sidebar from '~/components/Sidebar';
 import Loader from '~/components/ui/Loader';
 import { getDocumentationRequirements, getLCDData } from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
-    { title: 'HCPCS Scraper' },
+    { title: 'Local Coverage Determination (LCD)' },
     { name: 'description', content: 'Welcome to Remix!' },
   ];
 };
 
 export default function Index() {
-  const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
   const [generalRequirements, setGeneralRequirements] = useState<string | null>(
     null
   );
+  const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
 
-  const lcdData = useLoaderData<typeof loader>();
+  const loaderData = useLoaderData<loaderDataType[]>();
   const actionData = useActionData<typeof action>();
+
   const navigation = useNavigation();
+
+  const lcdData: lcdDataType[] = loaderData.map((obj) => ({
+    name: obj.name,
+    url: obj.url,
+  }));
+
+  const hcpcsModifiers = loaderData.map((obj: loaderDataType) => ({
+    modifiers: obj.hcpcsModifiers,
+  }));
 
   useEffect(() => {
     setGeneralRequirements(actionData);
   }, [actionData]);
 
-  const handleClick = (index: number) => {
+  const handleSidebarClick = (index: number) => {
     setSelectedLcdIndex(index);
     setGeneralRequirements(null);
   };
 
   return (
     <div className="flex h-screen">
-      {/* First Column */}
-      <div className="w-[450px] overflow-y-auto py-4">
-        <h2 className="text-2xl w-full px-2 font-bold tracking-tight">LCD's</h2>
-        <hr className="my-2" />
-
-        <Form
-          method="post"
-          className="flex flex-col divide-y divide-solid"
-        >
-          {lcdData.map((lcd, index) => (
-            <button
-              className={`hover:bg-gray-300 cursor-pointer py-2 px-2  w-full text-left ${
-                selectedLcdIndex === index && 'bg-gray-200'
-              }`}
-              key={lcd.name}
-              onClick={() => handleClick(index)}
-              name="lcdUrl"
-              value={lcd.link}
-              type="submit"
-            >
-              {lcd.name}
-            </button>
-          ))}
-        </Form>
-      </div>
+      <Sidebar
+        lcdData={lcdData}
+        selectedLcdIndex={selectedLcdIndex}
+        handleSideBarClick={handleSidebarClick}
+      />
 
       {/* Second Column */}
       <div className="flex-1 overflow-y-auto p-4">
         {selectedLcdIndex !== null ? (
           <>
-            <HCPCData {...lcdData[selectedLcdIndex]} />
-            {navigation.state === 'submitting' && <Loader />}
-            {actionData && <GeneralRequirements data={generalRequirements} />}
+            <HCPCData {...loaderData[selectedLcdIndex]} />
+            {/* {navigation.state === 'submitting' && <Loader />}
+            {actionData && <GeneralRequirements data={generalRequirements} />} */}
           </>
         ) : (
           <div className="text-center py-20">
-            <h1 className="text-4xl font-bold font-inter">HCPC Scraper</h1>
+            <h1 className="text-4xl font-bold font-inter">
+              Local Coverage Determination (LCD) Scraper
+            </h1>
             <p className="my-10">Select an LCD from the left column</p>
           </div>
         )}
       </div>
+      <h1>test</h1>
     </div>
   );
 }

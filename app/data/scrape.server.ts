@@ -60,7 +60,7 @@ export async function getLCDData(): Promise<lcdDataType[]> {
 
       const data = {
         name: linkText,
-        link: linkHref,
+        url: linkHref,
         hcpcsModifiers,
       };
 

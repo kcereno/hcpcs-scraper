@@ -1,5 +1,10 @@
+export type loaderDataType = {
+  name: string;
+  url: string;
+  hcpcsModifiers: string;
+};
+
 export type lcdDataType = {
   name: string;
-  link: string;
-  hcpcsModifiers: string;
+  url: string;
 };

@@ -29,10 +29,10 @@ function HCPCData({ name, link, hcpcsModifiers }: lcdDataType) {
         </ul>
       </div>
 
-      {/* <div className="my-10">
+      <div className="my-10">
         <h2 className="text-2xl tracking-tight font-bold">Codes</h2>
         <ul className="list-disc list-inside ml-2 flex flex-col gap-1"></ul>
-      </div> */}
+      </div>
     </div>
   );
 }
