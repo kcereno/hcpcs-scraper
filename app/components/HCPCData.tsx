@@ -1,18 +1,23 @@
+import { useActionData } from '@remix-run/react';
 import React from 'react';
-import type { lcdDataType } from 'types';
+import type { loaderDataType } from 'types';
 import { formatHcpcsModifiers, getHcpcsDescription } from 'utils/formatters';
+import type { action } from '~/routes/_index';
+import HCPCSCollapse from './HCPCSCollapse';
 
-function HCPCData({ name, link, hcpcsModifiers }: lcdDataType) {
+function HCPCData({ name, url, hcpcsModifiers }: loaderDataType) {
   const formattedHcpcsModifiers = formatHcpcsModifiers(hcpcsModifiers);
+
+  const documentationRequirements = useActionData<typeof action>();
 
   return (
     <div className="py-10">
-      <div className="">
+      <div className="mb-6">
         <h1 className="text-4xl tracking-tight font-bold">
           <a
             target="_blank"
             rel="noreferrer"
-            href={link}
+            href={url}
             className="text-blue-500 hover:text-blue-600"
           >
             {name}
@@ -20,19 +25,8 @@ function HCPCData({ name, link, hcpcsModifiers }: lcdDataType) {
         </h1>
         <hr />
       </div>
-      <div className="my-10">
-        <h2 className="text-2xl tracking-tight font-bold">HCPCS Modifiers</h2>
-        <ul className="list-disc list-inside ml-2 flex flex-col gap-1">
-          {formattedHcpcsModifiers.map((hcpc, index) => (
-            <li key={index}>{`${hcpc}  -  ${getHcpcsDescription(hcpc)}`}</li>
-          ))}
-        </ul>
-      </div>
 
-      <div className="my-10">
-        <h2 className="text-2xl tracking-tight font-bold">Codes</h2>
-        <ul className="list-disc list-inside ml-2 flex flex-col gap-1"></ul>
-      </div>
+      <HCPCSCollapse hcpcsModifiers={formattedHcpcsModifiers} />
     </div>
   );
 }

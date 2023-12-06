@@ -16,7 +16,10 @@ export const links: LinksFunction = () => [
 
 export default function App() {
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      data-theme="light"
+    >
       <head>
         <meta charSet="utf-8" />
         <meta
