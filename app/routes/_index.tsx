@@ -77,6 +77,14 @@ export async function action({ request }: ActionFunctionArgs) {
     });
   }
 
+  if (type === 'COVERAGE_GUIDELINES') {
+    const coverageGuidance = await getCoverageGuidance(url as string);
+    return json({
+      type: 'COVERAGE_GUIDELINES',
+      data: coverageGuidance,
+    });
+  }
+
   // const documentationRequirements = await getDocumentationRequirements(
   //   url as string
   // );

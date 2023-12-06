@@ -10,6 +10,6 @@ export type lcdDataType = {
 };
 
 export type actionDataType = {
-  type: 'GENERAL_REQUIREMENTS';
+  type: 'GENERAL_REQUIREMENTS' | 'COVERAGE_GUIDELINES';
   data: string;
 };

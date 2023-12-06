@@ -11,6 +11,7 @@ type Props = {
 
 function HCPCData({ selectedLcdIndex }: Props) {
   const [generalRequirements, setGeneralRequirements] = useState<string>('');
+  const [coverageGuidance, setCoverageGuidance] = useState<string>('');
 
   const loaderData = useLoaderData<loaderDataType[]>();
   const actionData = useActionData<actionDataType>();
@@ -23,6 +24,14 @@ function HCPCData({ selectedLcdIndex }: Props) {
       actionData.data
     ) {
       setGeneralRequirements(actionData.data);
+    }
+
+    if (
+      actionData &&
+      actionData.type === 'COVERAGE_GUIDELINES' &&
+      actionData.data
+    ) {
+      setCoverageGuidance(actionData.data);
     }
   }, [actionData]);
 
@@ -52,7 +61,10 @@ function HCPCData({ selectedLcdIndex }: Props) {
           selectedLcdUrl={lcdUrl}
           data={generalRequirements}
         />
-        {/* <CoverageGuidanceCollapse data={actionData?.coverageGuidance} /> */}
+        <CoverageGuidanceCollapse
+          selectedLcdUrl={lcdUrl}
+          data={coverageGuidance}
+        />
       </div>
     </div>
   );
