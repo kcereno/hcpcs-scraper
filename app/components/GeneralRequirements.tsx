@@ -7,9 +7,8 @@ type Props = {
 };
 
 function GeneralRequirementsCollapse({ data }: Props) {
-  console.log('GeneralRequirementsCollapse ~ data:', data);
   const navigation = useNavigation();
-  console.log('GeneralRequirementsCollapse ~ navigation:', navigation);
+
   const [open, setOpen] = useState(false);
   return (
     <div
@@ -27,7 +26,7 @@ function GeneralRequirementsCollapse({ data }: Props) {
       </div>
       <div className="collapse-content space-y-4">
         {navigation.state === 'submitting' && <Loader />}
-        {data ? (
+        {data && navigation.state !== 'submitting' ? (
           <div
             className=""
             dangerouslySetInnerHTML={{ __html: data }}
