@@ -4,19 +4,17 @@ import {
   type MetaFunction,
 } from '@remix-run/node';
 import type { ShouldRevalidateFunction } from '@remix-run/react';
-import {
-  Form,
-  useActionData,
-  useLoaderData,
-  useNavigation,
-} from '@remix-run/react';
-import { useEffect, useState } from 'react';
-import { lcdDataType, loaderDataType } from 'types';
-import GeneralRequirements from '~/components/GeneralRequirements';
+import { useActionData, useLoaderData } from '@remix-run/react';
+import { useState } from 'react';
+import type { lcdDataType, loaderDataType } from 'types';
 import HCPCData from '~/components/HCPCData';
 import Sidebar from '~/components/Sidebar';
-import Loader from '~/components/ui/Loader';
-import { getDocumentationRequirements, getLCDData } from '~/data/scrape.server';
+
+import {
+  getCoverageGuidance,
+  getDocumentationRequirements,
+  getLCDData,
+} from '~/data/scrape.server';
 
 export const meta: MetaFunction = () => {
   return [
@@ -26,32 +24,17 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const [generalRequirements, setGeneralRequirements] = useState<string | null>(
-    null
-  );
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
 
   const loaderData = useLoaderData<loaderDataType[]>();
-  const actionData = useActionData<typeof action>();
-
-  const navigation = useNavigation();
 
   const lcdData: lcdDataType[] = loaderData.map((obj) => ({
     name: obj.name,
     url: obj.url,
   }));
 
-  const hcpcsModifiers = loaderData.map((obj: loaderDataType) => ({
-    modifiers: obj.hcpcsModifiers,
-  }));
-
-  useEffect(() => {
-    setGeneralRequirements(actionData);
-  }, [actionData]);
-
   const handleSidebarClick = (index: number) => {
     setSelectedLcdIndex(index);
-    setGeneralRequirements(null);
   };
 
   return (
@@ -67,8 +50,6 @@ export default function Index() {
         {selectedLcdIndex !== null ? (
           <>
             <HCPCData {...loaderData[selectedLcdIndex]} />
-            {/* {navigation.state === 'submitting' && <Loader />}
-            {actionData && <GeneralRequirements data={generalRequirements} />} */}
           </>
         ) : (
           <div className="text-center py-20">
@@ -97,7 +78,9 @@ export async function action({ request }: ActionFunctionArgs) {
     url as string
   );
 
-  return json(documentationRequirements);
+  const coverageGuidance = await getCoverageGuidance(url as string);
+
+  return json({ documentationRequirements, coverageGuidance });
 }
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;

@@ -6,7 +6,7 @@ type Props = {
   data: any;
 };
 
-function GeneralRequirementsCollapse({ data }: Props) {
+function CoverageGuidanceCollapse({ data }: Props) {
   const navigation = useNavigation();
 
   const [open, setOpen] = useState(false);
@@ -22,7 +22,7 @@ function GeneralRequirementsCollapse({ data }: Props) {
         name="my-accordion-1"
       />
       <div className="collapse-title text-2xl tracking-tight font-bold">
-        General Requirements
+        Coverage Guidance
       </div>
       <div className="collapse-content space-y-4">
         {navigation.state === 'submitting' && <Loader />}
@@ -34,10 +34,7 @@ function GeneralRequirementsCollapse({ data }: Props) {
         ) : null}
       </div>
     </div>
-    // <div>
-
-    // </div>
   );
 }
 
-export default GeneralRequirementsCollapse;
+export default CoverageGuidanceCollapse;

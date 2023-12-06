@@ -94,3 +94,26 @@ export async function getDocumentationRequirements(url: string) {
     await browser.close();
   }
 }
+
+export async function getCoverageGuidance(url: string) {
+  console.log('fetching coverage guidance');
+
+  const browser = await startBrowser();
+  const page = await browser.newPage();
+
+  try {
+    await page.goto(url);
+
+    const selector = 'div[id="divCoverageIndication"]';
+
+    const scrapedElement = await page.$(selector);
+    const content = await page.evaluate((el) => el.innerHTML, scrapedElement);
+
+    return content;
+  } catch (error) {
+    console.log('getCoverageGuidance ~ error:', error);
+    return { error: 'error' };
+  } finally {
+    await browser.close();
+  }
+}

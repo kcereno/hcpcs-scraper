@@ -4,12 +4,13 @@ import type { loaderDataType } from 'types';
 import { formatHcpcsModifiers } from 'utils/formatters';
 import type { action } from '~/routes/_index';
 import HCPCSCollapse from './HCPCSCollapse';
-import GeneralRequirementsCollapse from './GeneralRequirements';
+import GeneralRequirementsCollapse from './GeneralRequirementsCollapse';
+import CoverageGuidanceCollapse from './CoverageGuidanceCollapse';
 
 function HCPCData({ name, url, hcpcsModifiers }: loaderDataType) {
   const formattedHcpcsModifiers = formatHcpcsModifiers(hcpcsModifiers);
 
-  const documentationRequirements = useActionData<typeof action>();
+  const actionData = useActionData<typeof action>();
 
   return (
     <div className="py-10">
@@ -28,7 +29,10 @@ function HCPCData({ name, url, hcpcsModifiers }: loaderDataType) {
       </div>
       <div className="space-y-2">
         <HCPCSCollapse hcpcsModifiers={formattedHcpcsModifiers} />
-        <GeneralRequirementsCollapse data={documentationRequirements} />
+        <GeneralRequirementsCollapse
+          data={actionData?.documentationRequirements}
+        />
+        <CoverageGuidanceCollapse data={actionData?.coverageGuidance} />
       </div>
     </div>
   );
