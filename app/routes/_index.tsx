@@ -26,13 +26,6 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
 
-  const loaderData = useLoaderData<loaderDataType[]>();
-
-  const lcdData: lcdDataType[] = loaderData.map((obj) => ({
-    name: obj.name,
-    url: obj.url,
-  }));
-
   const handleSidebarClick = (index: number) => {
     setSelectedLcdIndex(index);
   };
@@ -40,7 +33,6 @@ export default function Index() {
   return (
     <div className="flex h-screen">
       <Sidebar
-        lcdData={lcdData}
         selectedLcdIndex={selectedLcdIndex}
         handleSideBarClick={handleSidebarClick}
       />
@@ -49,7 +41,7 @@ export default function Index() {
       <div className="flex-1 overflow-y-auto p-4">
         {selectedLcdIndex !== null ? (
           <>
-            <HCPCData {...loaderData[selectedLcdIndex]} />
+            <HCPCData selectedLcdIndex={selectedLcdIndex} />
           </>
         ) : (
           <div className="text-center py-20">
@@ -72,15 +64,27 @@ export async function loader() {
 export async function action({ request }: ActionFunctionArgs) {
   console.log('action');
   const formData = await request.formData();
-  const url = formData.get('lcdUrl');
+  const type = await formData.get('type');
+  const url = await formData.get('url');
 
-  const documentationRequirements = await getDocumentationRequirements(
-    url as string
-  );
+  if (type === 'GENERAL_REQUIREMENTS') {
+    const documentationRequirements = await getDocumentationRequirements(
+      url as string
+    );
+    return json({
+      type: 'GENERAL_REQUIREMENTS',
+      data: documentationRequirements,
+    });
+  }
 
-  const coverageGuidance = await getCoverageGuidance(url as string);
+  // const documentationRequirements = await getDocumentationRequirements(
+  //   url as string
+  // );
 
-  return json({ documentationRequirements, coverageGuidance });
+  // const coverageGuidance = await getCoverageGuidance(url as string);
+
+  // return json({ documentationRequirements, coverageGuidance });
+  return 'test';
 }
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;

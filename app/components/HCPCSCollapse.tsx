@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { getHcpcsDescription } from 'utils/formatters';
 
 type Props = {
@@ -31,14 +31,14 @@ const HCPCSCollapse = ({ hcpcsModifiers }: Props) => {
             ))}
           </ul>
         </div>
-        <div className="">
+        {/* <div className="">
           <h2 className="text-xl tracking-tight font-bold">Codes</h2>
           <ul className="list-disc list-inside ml-2 flex flex-col gap-1">
             {hcpcsModifiers.map((hcpc, index) => (
               <li key={index}>{`${hcpc}  -  ${getHcpcsDescription(hcpc)}`}</li>
             ))}
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

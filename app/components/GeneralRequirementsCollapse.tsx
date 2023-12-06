@@ -1,21 +1,31 @@
-import { useNavigation } from '@remix-run/react';
+import { Form, useNavigation, useSubmit } from '@remix-run/react';
 import React, { useState } from 'react';
 import Loader from './ui/Loader';
+import { lcdDataType } from '../../types';
 
 type Props = {
-  data: any;
+  selectedLcdUrl: string;
+  data: string;
 };
 
-function GeneralRequirementsCollapse({ data }: Props) {
+function GeneralRequirementsCollapse({ selectedLcdUrl, data = '' }: Props) {
+  console.log('GeneralRequirementsCollapse ~ selectedLcdUrl:', selectedLcdUrl);
   const navigation = useNavigation();
-
+  const submit = useSubmit();
   const [open, setOpen] = useState(false);
+
   return (
-    <div
+    <Form
       className={`collapse collapse-plus bg-base-200 max-w-7xl ${
         open ? 'collapse-open' : 'collapse-close'
       }`}
-      onClick={() => setOpen(!open)}
+      onClick={() => {
+        setOpen(!open);
+        submit(
+          { type: 'GENERAL_REQUIREMENTS', url: selectedLcdUrl },
+          { method: 'post' }
+        );
+      }}
     >
       <input
         type="radio"
@@ -33,7 +43,7 @@ function GeneralRequirementsCollapse({ data }: Props) {
           ></div>
         ) : null}
       </div>
-    </div>
+    </Form>
   );
 }
 

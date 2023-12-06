@@ -1,16 +1,35 @@
-import { useActionData } from '@remix-run/react';
-import React from 'react';
-import type { loaderDataType } from 'types';
-import { formatHcpcsModifiers } from 'utils/formatters';
-import type { action } from '~/routes/_index';
+import { useActionData, useLoaderData } from '@remix-run/react';
+import React, { useEffect, useState } from 'react';
+import type { actionDataType, loaderDataType } from 'types';
 import HCPCSCollapse from './HCPCSCollapse';
 import GeneralRequirementsCollapse from './GeneralRequirementsCollapse';
 import CoverageGuidanceCollapse from './CoverageGuidanceCollapse';
 
-function HCPCData({ name, url, hcpcsModifiers }: loaderDataType) {
-  const formattedHcpcsModifiers = formatHcpcsModifiers(hcpcsModifiers);
+type Props = {
+  selectedLcdIndex: number;
+};
 
-  const actionData = useActionData<typeof action>();
+function HCPCData({ selectedLcdIndex }: Props) {
+  const [generalRequirements, setGeneralRequirements] = useState<string>('');
+
+  const loaderData = useLoaderData<loaderDataType[]>();
+  const actionData = useActionData<actionDataType>();
+
+  // Updates the general requirements when the action data is updated
+  useEffect(() => {
+    if (
+      actionData &&
+      actionData.type === 'GENERAL_REQUIREMENTS' &&
+      actionData.data
+    ) {
+      setGeneralRequirements(actionData.data);
+    }
+  }, [actionData]);
+
+  const lcdName = loaderData[selectedLcdIndex].name;
+  const lcdUrl = loaderData[selectedLcdIndex].url;
+  const hcpcsModifiers =
+    loaderData[selectedLcdIndex].hcpcsModifiers.split(', ');
 
   return (
     <div className="py-10">
@@ -19,20 +38,21 @@ function HCPCData({ name, url, hcpcsModifiers }: loaderDataType) {
           <a
             target="_blank"
             rel="noreferrer"
-            href={url}
+            href={lcdUrl}
             className="text-blue-500 hover:text-blue-600"
           >
-            {name}
+            {lcdName}
           </a>
         </h1>
         <hr />
       </div>
       <div className="space-y-2">
-        <HCPCSCollapse hcpcsModifiers={formattedHcpcsModifiers} />
+        <HCPCSCollapse hcpcsModifiers={hcpcsModifiers} />
         <GeneralRequirementsCollapse
-          data={actionData?.documentationRequirements}
+          selectedLcdUrl={lcdUrl}
+          data={generalRequirements}
         />
-        <CoverageGuidanceCollapse data={actionData?.coverageGuidance} />
+        {/* <CoverageGuidanceCollapse data={actionData?.coverageGuidance} /> */}
       </div>
     </div>
   );

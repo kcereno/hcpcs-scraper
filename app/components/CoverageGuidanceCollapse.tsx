@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import Loader from './ui/Loader';
 
 type Props = {
-  data: any;
+  data: string;
 };
 
 function CoverageGuidanceCollapse({ data }: Props) {
+  console.log('CoverageGuidanceCollapse ~ data:', data);
   const navigation = useNavigation();
 
   const [open, setOpen] = useState(false);
