@@ -2,7 +2,7 @@ export type loaderDataType = {
   lcdName: string;
   lcdUrl: string;
   hcpcsModifiers: string;
-  coverageGuidance: string;
+  getCoverageGuidelines: string;
   documentationRequirements: string;
 };
 

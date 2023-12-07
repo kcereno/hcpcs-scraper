@@ -1,6 +1,3 @@
-import { useActionData, useLoaderData } from '@remix-run/react';
-import React, { useEffect, useState } from 'react';
-import type { actionDataType, loaderDataType } from 'types';
 import HCPCSCollapse from './HCPCSCollapse';
 import GeneralRequirementsCollapse from './GeneralRequirementsCollapse';
 import CoverageGuidanceCollapse from './CoverageGuidanceCollapse';
@@ -14,7 +11,7 @@ function HCPCData({
     lcdName,
     lcdUrl,
     hcpcsModifiers,
-    coverageGuidance,
+    getCoverageGuidelines,
     documentationRequirements,
   },
 }: Props) {
@@ -38,10 +35,7 @@ function HCPCData({
       <div className="space-y-2">
         <HCPCSCollapse hcpcsModifiers={formattedHcpcsModifiers} />
         <GeneralRequirementsCollapse data={documentationRequirements} />
-        {/* <CoverageGuidanceCollapse
-          selectedLcdUrl={lcdUrl}
-          data={coverageGuidance}
-        /> */}
+        <CoverageGuidanceCollapse data={getCoverageGuidelines} />
       </div>
     </div>
   );

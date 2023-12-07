@@ -1,18 +1,15 @@
-import {
-  json,
-  type ActionFunctionArgs,
-  type MetaFunction,
-} from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { json, type MetaFunction } from '@remix-run/node';
+
 import { useState } from 'react';
 import HCPCData from '~/components/HCPCData';
 import Sidebar from '~/components/Sidebar';
 import fs from 'fs/promises';
-
 import {
-  getCoverageGuidance,
-  getDocumentationRequirements,
-} from '~/data/scrape.server';
+  isRouteErrorResponse,
+  useRouteError,
+  useLoaderData,
+} from '@remix-run/react';
+
 import type { lcdDataType, loaderDataType } from 'types';
 
 export const meta: MetaFunction = () => {
@@ -63,38 +60,34 @@ export default function Index() {
   );
 }
 
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>{error.message}</p>
+        <p>The stack trace is:</p>
+        <pre>{error.stack}</pre>
+      </div>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
+}
+
 export async function loader() {
   const data = await fs.readFile('./lcdData.json', 'utf-8');
   const parsedData = JSON.parse(data);
   return json(parsedData);
 }
-export async function action({ request }: ActionFunctionArgs) {
-  console.log('action');
-  const formData = await request.formData();
-  const type = await formData.get('type');
-  const url = await formData.get('url');
-
-  try {
-    if (type === 'GENERAL_REQUIREMENTS') {
-      const documentationRequirements = await getDocumentationRequirements(
-        url as string
-      );
-      return json({
-        type: 'GENERAL_REQUIREMENTS',
-        data: documentationRequirements,
-      });
-    }
-
-    if (type === 'COVERAGE_GUIDELINES') {
-      const coverageGuidance = await getCoverageGuidance(url as string);
-      return json({
-        type: 'COVERAGE_GUIDELINES',
-        data: coverageGuidance,
-      });
-    }
-  } catch (error: any) {
-    return json({ message: error.message });
-  }
-}
-
-export const shouldRevalidate: ShouldRevalidateFunction = () => false;
