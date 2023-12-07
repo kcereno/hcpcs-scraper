@@ -87,7 +87,7 @@ export function ErrorBoundary() {
 }
 
 export async function loader() {
-  const data = await fs.readFile('public/data/lcdData.json', 'utf-8');
+  const data = await fs.readFile('app/data/lcdData.json', 'utf-8');
   const parsedData = JSON.parse(data);
   return json(parsedData);
 }
