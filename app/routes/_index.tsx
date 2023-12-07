@@ -3,10 +3,12 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from '@remix-run/node';
-import type { ShouldRevalidateFunction } from '@remix-run/react';
-import { useActionData, useLoaderData } from '@remix-run/react';
+import {
+  useRouteError,
+  type ShouldRevalidateFunction,
+  isRouteErrorResponse,
+} from '@remix-run/react';
 import { useState } from 'react';
-import type { lcdDataType, loaderDataType } from 'types';
 import HCPCData from '~/components/HCPCData';
 import Sidebar from '~/components/Sidebar';
 
@@ -52,9 +54,34 @@ export default function Index() {
           </div>
         )}
       </div>
-      <h1>test</h1>
     </div>
   );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  if (isRouteErrorResponse(error)) {
+    return (
+      <div>
+        <h1>
+          {error.status} {error.statusText}
+        </h1>
+        <p>{error.data}</p>
+      </div>
+    );
+  } else if (error instanceof Error) {
+    return (
+      <div>
+        <h1>Error</h1>
+        <p>{error.message}</p>
+        <p>The stack trace is:</p>
+        <pre>{error.stack}</pre>
+      </div>
+    );
+  } else {
+    return <h1>Unknown Error</h1>;
+  }
 }
 
 export async function loader() {
@@ -67,32 +94,27 @@ export async function action({ request }: ActionFunctionArgs) {
   const type = await formData.get('type');
   const url = await formData.get('url');
 
-  if (type === 'GENERAL_REQUIREMENTS') {
-    const documentationRequirements = await getDocumentationRequirements(
-      url as string
-    );
-    return json({
-      type: 'GENERAL_REQUIREMENTS',
-      data: documentationRequirements,
-    });
+  try {
+    if (type === 'GENERAL_REQUIREMENTS') {
+      const documentationRequirements = await getDocumentationRequirements(
+        url as string
+      );
+      return json({
+        type: 'GENERAL_REQUIREMENTS',
+        data: documentationRequirements,
+      });
+    }
+
+    if (type === 'COVERAGE_GUIDELINES') {
+      const coverageGuidance = await getCoverageGuidance(url as string);
+      return json({
+        type: 'COVERAGE_GUIDELINES',
+        data: coverageGuidance,
+      });
+    }
+  } catch (error: any) {
+    return json({ message: error.message });
   }
-
-  if (type === 'COVERAGE_GUIDELINES') {
-    const coverageGuidance = await getCoverageGuidance(url as string);
-    return json({
-      type: 'COVERAGE_GUIDELINES',
-      data: coverageGuidance,
-    });
-  }
-
-  // const documentationRequirements = await getDocumentationRequirements(
-  //   url as string
-  // );
-
-  // const coverageGuidance = await getCoverageGuidance(url as string);
-
-  // return json({ documentationRequirements, coverageGuidance });
-  return 'test';
 }
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false;

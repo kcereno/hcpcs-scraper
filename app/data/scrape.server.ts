@@ -89,7 +89,7 @@ export async function getDocumentationRequirements(url: string) {
     return content;
   } catch (error) {
     console.log('getDocumentationRequirements ~ error:', error);
-    return { error: 'error' };
+    throw new Error(error.message);
   } finally {
     await browser.close();
   }
@@ -111,8 +111,7 @@ export async function getCoverageGuidance(url: string) {
 
     return content;
   } catch (error) {
-    console.log('getCoverageGuidance ~ error:', error);
-    return { error: 'error' };
+    throw new Error(error.message);
   } finally {
     await browser.close();
   }
