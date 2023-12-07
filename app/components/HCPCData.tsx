@@ -1,6 +1,7 @@
 import HCPCSCollapse from './HCPCSCollapse';
 import GeneralRequirementsCollapse from './GeneralRequirementsCollapse';
 import CoverageGuidanceCollapse from './CoverageGuidanceCollapse';
+import type { loaderDataType } from 'types';
 
 type Props = {
   selectedLcd: loaderDataType;
