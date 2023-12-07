@@ -12,7 +12,7 @@ function HCPCData({
     lcdName,
     lcdUrl,
     hcpcsModifiers,
-    getCoverageGuidelines,
+    coverageGuidance,
     documentationRequirements,
   },
 }: Props) {
@@ -36,7 +36,7 @@ function HCPCData({
       <div className="space-y-2">
         <HCPCSCollapse hcpcsModifiers={formattedHcpcsModifiers} />
         <GeneralRequirementsCollapse data={documentationRequirements} />
-        <CoverageGuidanceCollapse data={getCoverageGuidelines} />
+        <CoverageGuidanceCollapse data={coverageGuidance} />
       </div>
     </div>
   );
