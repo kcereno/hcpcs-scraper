@@ -1,16 +1,13 @@
-import { json, type MetaFunction } from '@remix-run/node';
+import { type MetaFunction } from '@remix-run/node';
 
 import { useState } from 'react';
 import HCPCData from '~/components/HCPCData';
 import Sidebar from '~/components/Sidebar';
-import fs from 'fs/promises';
-import {
-  isRouteErrorResponse,
-  useRouteError,
-  useLoaderData,
-} from '@remix-run/react';
+// import fs from 'fs/promises';
+import { isRouteErrorResponse, useRouteError } from '@remix-run/react';
 
-import type { lcdDataType, loaderDataType } from 'types';
+import type { lcdDataType } from 'types';
+import jsonData from '~/data/lcdData.json';
 
 export const meta: MetaFunction = () => {
   return [
@@ -22,9 +19,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
 
-  const loaderData = useLoaderData<loaderDataType[]>();
-
-  const lcdData: lcdDataType[] = loaderData.map((data) => ({
+  const lcdData: lcdDataType[] = jsonData.map((data) => ({
     name: data.lcdName,
     url: data.lcdUrl,
   }));
@@ -45,7 +40,7 @@ export default function Index() {
       <div className="flex-1 overflow-y-auto p-4">
         {selectedLcdIndex !== null ? (
           <>
-            <HCPCData selectedLcd={loaderData[selectedLcdIndex]} />
+            <HCPCData selectedLcd={jsonData[selectedLcdIndex]} />
           </>
         ) : (
           <div className="text-center py-20">
@@ -86,8 +81,8 @@ export function ErrorBoundary() {
   }
 }
 
-export async function loader() {
-  const data = await fs.readFile('app/data/lcdData.json', 'utf-8');
-  const parsedData = JSON.parse(data);
-  return json(parsedData);
-}
+// export async function loader() {
+//   const data = await fs.readFile('app/data/lcdData.json', 'utf-8');
+//   const parsedData = JSON.parse(data);
+//   return json(parsedData);
+// }
