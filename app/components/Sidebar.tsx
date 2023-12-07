@@ -1,19 +1,12 @@
-import { useLoaderData } from '@remix-run/react';
-import type { lcdDataType, loaderDataType } from 'types';
+import type { lcdDataType } from 'types';
 
 type Props = {
+  lcdData: lcdDataType[];
   selectedLcdIndex: number | null;
   handleSideBarClick: (index: number) => void;
 };
 
-function Sidebar({ selectedLcdIndex, handleSideBarClick }: Props) {
-  const loaderData = useLoaderData<loaderDataType[]>();
-
-  const lcdData: lcdDataType[] = loaderData.map(({ name, url }) => ({
-    name,
-    url,
-  }));
-
+function Sidebar({ lcdData, selectedLcdIndex, handleSideBarClick }: Props) {
   return (
     <div className="w-[400px] overflow-y-auto py-4 border-r ">
       <h2 className="text-2xl w-full px-2 font-bold tracking-tight">LCD's</h2>

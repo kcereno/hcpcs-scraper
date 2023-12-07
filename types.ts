@@ -1,7 +1,9 @@
 export type loaderDataType = {
-  name: string;
-  url: string;
+  lcdName: string;
+  lcdUrl: string;
   hcpcsModifiers: string;
+  coverageGuidance: string;
+  documentationRequirements: string;
 };
 
 export type lcdDataType = {

@@ -3,20 +3,17 @@ import {
   type ActionFunctionArgs,
   type MetaFunction,
 } from '@remix-run/node';
-import {
-  useRouteError,
-  type ShouldRevalidateFunction,
-  isRouteErrorResponse,
-} from '@remix-run/react';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import HCPCData from '~/components/HCPCData';
 import Sidebar from '~/components/Sidebar';
+import fs from 'fs/promises';
 
 import {
   getCoverageGuidance,
   getDocumentationRequirements,
-  getLCDData,
 } from '~/data/scrape.server';
+import type { lcdDataType, loaderDataType } from 'types';
 
 export const meta: MetaFunction = () => {
   return [
@@ -28,6 +25,13 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   const [selectedLcdIndex, setSelectedLcdIndex] = useState<number | null>(null);
 
+  const loaderData = useLoaderData<loaderDataType[]>();
+
+  const lcdData: lcdDataType[] = loaderData.map((data) => ({
+    name: data.lcdName,
+    url: data.lcdUrl,
+  }));
+
   const handleSidebarClick = (index: number) => {
     setSelectedLcdIndex(index);
   };
@@ -35,6 +39,7 @@ export default function Index() {
   return (
     <div className="flex h-screen">
       <Sidebar
+        lcdData={lcdData}
         selectedLcdIndex={selectedLcdIndex}
         handleSideBarClick={handleSidebarClick}
       />
@@ -43,7 +48,7 @@ export default function Index() {
       <div className="flex-1 overflow-y-auto p-4">
         {selectedLcdIndex !== null ? (
           <>
-            <HCPCData selectedLcdIndex={selectedLcdIndex} />
+            <HCPCData selectedLcd={loaderData[selectedLcdIndex]} />
           </>
         ) : (
           <div className="text-center py-20">
@@ -58,35 +63,10 @@ export default function Index() {
   );
 }
 
-export function ErrorBoundary() {
-  const error = useRouteError();
-
-  if (isRouteErrorResponse(error)) {
-    return (
-      <div>
-        <h1>
-          {error.status} {error.statusText}
-        </h1>
-        <p>{error.data}</p>
-      </div>
-    );
-  } else if (error instanceof Error) {
-    return (
-      <div>
-        <h1>Error</h1>
-        <p>{error.message}</p>
-        <p>The stack trace is:</p>
-        <pre>{error.stack}</pre>
-      </div>
-    );
-  } else {
-    return <h1>Unknown Error</h1>;
-  }
-}
-
 export async function loader() {
-  const lcdData = await getLCDData();
-  return json(lcdData);
+  const data = await fs.readFile('./lcdData.json', 'utf-8');
+  const parsedData = JSON.parse(data);
+  return json(parsedData);
 }
 export async function action({ request }: ActionFunctionArgs) {
   console.log('action');

@@ -6,39 +6,19 @@ import GeneralRequirementsCollapse from './GeneralRequirementsCollapse';
 import CoverageGuidanceCollapse from './CoverageGuidanceCollapse';
 
 type Props = {
-  selectedLcdIndex: number;
+  selectedLcd: loaderDataType;
 };
 
-function HCPCData({ selectedLcdIndex }: Props) {
-  const [generalRequirements, setGeneralRequirements] = useState<string>('');
-  const [coverageGuidance, setCoverageGuidance] = useState<string>('');
-
-  const loaderData = useLoaderData<loaderDataType[]>();
-  const actionData = useActionData<actionDataType>();
-
-  // Updates the general requirements when the action data is updated
-  useEffect(() => {
-    if (
-      actionData &&
-      actionData.type === 'GENERAL_REQUIREMENTS' &&
-      actionData.data
-    ) {
-      setGeneralRequirements(actionData.data);
-    }
-
-    if (
-      actionData &&
-      actionData.type === 'COVERAGE_GUIDELINES' &&
-      actionData.data
-    ) {
-      setCoverageGuidance(actionData.data);
-    }
-  }, [actionData]);
-
-  const lcdName = loaderData[selectedLcdIndex].name;
-  const lcdUrl = loaderData[selectedLcdIndex].url;
-  const hcpcsModifiers =
-    loaderData[selectedLcdIndex].hcpcsModifiers.split(', ');
+function HCPCData({
+  selectedLcd: {
+    lcdName,
+    lcdUrl,
+    hcpcsModifiers,
+    coverageGuidance,
+    documentationRequirements,
+  },
+}: Props) {
+  const formattedHcpcsModifiers = hcpcsModifiers.split(', ');
 
   return (
     <div className="py-10">
@@ -56,15 +36,12 @@ function HCPCData({ selectedLcdIndex }: Props) {
         <hr />
       </div>
       <div className="space-y-2">
-        <HCPCSCollapse hcpcsModifiers={hcpcsModifiers} />
-        <GeneralRequirementsCollapse
-          selectedLcdUrl={lcdUrl}
-          data={generalRequirements}
-        />
-        <CoverageGuidanceCollapse
+        <HCPCSCollapse hcpcsModifiers={formattedHcpcsModifiers} />
+        <GeneralRequirementsCollapse data={documentationRequirements} />
+        {/* <CoverageGuidanceCollapse
           selectedLcdUrl={lcdUrl}
           data={coverageGuidance}
-        />
+        /> */}
       </div>
     </div>
   );
